@@ -17,7 +17,7 @@ from lonelyboy.geospatial import plots as gsplt
 from lonelyboy.geospatial import preprocessing as gspp
 from lonelyboy.timeseries import lbtimeseries as tspp
 import configparser, os
-import time
+import time, datetime
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -47,18 +47,18 @@ print('Done reading data')
 traj = trajectories.copy()
 print('started single core processing')
 start_single = time.time()
-traj = gspp.clean_gdf(traj)
-single_final = gspp.segment_trajectories(traj)
+gspp.clean_gdf(traj)
+gspp.segment_trajectories(traj)
 print (f'Single core took {time.time()-start_single} secs.')
 
 print(f'Started multi core processing with {cpu_count()} cores')
-traj = trajectories.copy()
-start_mult = time.time()
-traj = gspp.parallelize_dataframe(traj, gspp.clean_gdf, np_split=False, num_partitions=cpu_count())
-multi_final = gspp.parallelize_dataframe(traj, gspp.segment_trajectories, np_split=False, num_partitions=cpu_count())
+#traj = trajectories.copy()
+#start_mult = time.time()
+#traj = gspp.parallelize_dataframe(traj, gspp.clean_gdf, np_split=False, num_partitions=cpu_count())
+#multi_final = gspp.parallelize_dataframe(traj, gspp.segment_trajectories, np_split=False, num_partitions=cpu_count())
 
-print (f'Multi core took {time.time()-start_mult} secs.')
+#print (f'Multi core took {time.time()-start_mult} secs.')
 
-print (f'Result -> {single_final.equals(multi_final)}')
-multi_final.to_csv('multifinal.csv')
-single_final.to_csv('singlefinal.csv')
+#print (f'Result -> {single_final.equals(multi_final)}')
+#multi_final.to_csv('multifinal.csv')
+traj.to_csv(f'single.csv')
