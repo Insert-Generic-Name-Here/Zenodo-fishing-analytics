@@ -30,7 +30,7 @@ port    = '46132'
 # ts>1456802710 AND ts<1456975510 
 
 # traj_sql = 'SELECT * FROM ais_data.dynamic_ships WHERE  mmsi=226179000'
-traj_sql = 'SELECT * FROM ais_data.dynamic_ships WHERE  ts>1456702710 AND ts<1456975510 '
+traj_sql = 'SELECT * FROM ais_data.dynamic_ships WHERE ts>1456702710 AND ts<1456975510'
 ports_sql = 'SELECT * FROM ports.ports_of_brittany'
 print('##########################')
 print('Reading data from server')
@@ -47,11 +47,12 @@ print('Done reading data')
 traj = trajectories.copy()
 print('started single core processing')
 start_single = time.time()
-gspp.clean_gdf(traj)
-gspp.segment_trajectories(traj)
+traj = gspp.clean_gdf(traj)
+traj = gspp.segment_trajectories(traj)
 print (f'Single core took {time.time()-start_single} secs.')
+print('Nans -> ',traj.traj_id.isna().sum())
 
-print(f'Started multi core processing with {cpu_count()} cores')
+#print(f'Started multi core processing with {cpu_count()} cores')
 #traj = trajectories.copy()
 #start_mult = time.time()
 #traj = gspp.parallelize_dataframe(traj, gspp.clean_gdf, np_split=False, num_partitions=cpu_count())
@@ -61,4 +62,5 @@ print(f'Started multi core processing with {cpu_count()} cores')
 
 #print (f'Result -> {single_final.equals(multi_final)}')
 #multi_final.to_csv('multifinal.csv')
-traj.to_csv(f'single.csv')
+print('Saving csv file ..')
+traj.to_csv(f'single.csv', index=False)
