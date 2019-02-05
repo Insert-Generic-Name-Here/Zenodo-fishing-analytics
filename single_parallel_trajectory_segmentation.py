@@ -45,10 +45,10 @@ print('Done reading data')
 
 # SINGLE CORE
 traj = trajectories.copy()
-print('started single core processing')
+print(f'Started single core processing for {len(trajectories)} trajectories')
 start_single = time.time()
 traj = gspp.clean_gdf(traj)
-traj = gspp.segment_trajectories(traj)
+traj = gspp.segment_trajectories(traj, pois_alpha=10)
 print (f'Single core took {time.time()-start_single} secs.')
 print('Nans -> ',traj.traj_id.isna().sum())
 
