@@ -45,11 +45,17 @@ def dbshit(X,scaler,colname,**dbscan_params):
 if os.path.isfile('data/prepd_timeframe.csv'):
 	sample_timeFrame = pd.read_csv('data/prepd_timeframe.csv', index_col=0)
 else:
-	host    = '195.251.230.8'
-	db_name = 'doi105281zenodo1167595'
-	uname   = 'students'
-	pw      = 'infol@bdbl@bs2017'
-	port    = '46132'
+	properties = configparser.ConfigParser()
+	properties.read(os.path.join('..','sql_server.ini'))
+	properties = properties['SERVER']
+
+	host    = properties['host']
+	db_name = properties['db_name']
+	uname   = properties['uname']
+	pw      = properties['pw']
+	port    = properties['port']
+	con     = psycopg2.connect(database=db_name, user=uname, password=pw, host=host, port=port)
+	cur     = con.cursor()
 
 	traj_sql = 'SELECT * FROM ais_data.dynamic_ships WHERE ts>1456802710 AND ts<1456975510  '
 	ports_sql = 'SELECT * FROM ports.ports_of_brittany'

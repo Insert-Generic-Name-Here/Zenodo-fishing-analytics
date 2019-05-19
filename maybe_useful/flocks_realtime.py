@@ -156,17 +156,25 @@ def merge_pattern(new_clusters, clusters_to_keep):
 def run_sim(diam = 5000, min_samples = 20, min_card = 2, circular=True, save_flag = True):
 
 	# Parames
-
+	# diam: diam (in meters)
+	# min_samples (dt in resampling units)
+	# min_card (cardinality)
+	# circular (flag for convoys/flocks)
 
 	try:
 		df = pd.read_csv('prepd_df.csv')
 
 	except FileNotFoundError:
-		host    = '195.251.230.8'
-		db_name = 'doi105281zenodo1167595'
-		uname   = 'students'
-		pw      = 'infol@bdbl@bs2017'
-		port    = '46132'
+		properties = configparser.ConfigParser()
+		properties.read(os.path.join('..','sql_server.ini'))
+		properties = properties['SERVER']
+		host    = properties['host']
+		db_name = properties['db_name']
+		uname   = properties['uname']
+		pw      = properties['pw']
+		port    = properties['port']
+		con     = psycopg2.connect(database=db_name, user=uname, password=pw, host=host, port=port)
+		cur     = con.cursor()
 
 		# ts>1456802710 AND ts<1456975510
 
